@@ -1,15 +1,17 @@
 /*
  * Create a list that holds all of your cards
  */
-var cards = ['fa-diamond', 'fa-daimond',
+var cards = ['fa-diamond', 'fa-diamond',
             'fa-bolt', 'fa-bolt',
             'fa-bomb', 'fa-bomb',
             'fa-leaf', 'fa-leaf',
-            'fa-bicycle', 'fa-bicyle',
+            'fa-bicycle', 'fa-bicycle',
             'fa-paper-plane-o', 'fa-paper-plane-o',
             'fa-anchor', 'fa-anchor',
             'fa-cube', 'fa-cube',
             ];
+
+var movesCounter = document.querySelector('.moves');
 
 function generateCard(card) {
     return `<li class='card' data-card="${card}"><i class="fa ${card}"></i></li>`;
@@ -54,24 +56,22 @@ function initGame() {
         return generateCard(card);
     });
 
-    moves = 0;
-    movesCounter.innerText = moves;
+    movesCounter.innerText = 0;
 
     deck.innerHTML= cardHTML.join('');
 }
 
 initGame();
 
-
-
 var allCards = document.querySelectorAll('.card');
 var openCards = [];
 var moves = 0;
-var moveCounter = document.querySelector('.moves');
+
 
 allCards.forEach(function(card) {
     card.addEventListener('click', function(e) {
         
+        movesCounter.innerText = moves++;
         if (!card.classList.contains('open') && !card.classList.contains('show') && !card.classList.contains('match')) {
             openCards.push(card);
             card.classList.add('open', 'show');
