@@ -56,8 +56,6 @@ function initGame() {
         return generateCard(card);
     });
 
-    movesCounter.innerText = 0;
-
     deck.innerHTML= cardHTML.join('');
 }
 
@@ -66,12 +64,10 @@ initGame();
 var allCards = document.querySelectorAll('.card');
 var openCards = [];
 var moves = 0;
-
+var clicks = 0;
 
 allCards.forEach(function(card) {
-    card.addEventListener('click', function(e) {
-        
-        movesCounter.innerText = moves++;
+    card.addEventListener('click', function(e) {       
         
         if (!card.classList.contains('open') && !card.classList.contains('show') && !card.classList.contains('match')) {
             openCards.push(card);
@@ -99,8 +95,69 @@ allCards.forEach(function(card) {
                     openCards = [];
                 }, 1000);
             }
+        
+            StartGame()
+            cards = shuffle(cards);
+            
+            // remove all existing classes from each card
+            for (var i = 0; i < cards.length; i++){
+                deck.innerHTML = "";
+                [].forEach.call(cards, function(item) {
+                    deck.appendChild(item);
+                });
+                cards[i].classList.remove("show", "open", "match", "disabled");
+            }
+        
+            // reset star rating
+            for (var i= 0; i < stars.length; i++)
+           
+            //reset timer
+            var timer = document.querySelector(".timer");
+                timer.innerHTML = "0 mins 0 secs";
+                clearInterval(interval);
+            }
+        
+            //congrats popup
+            let modal = document.getElementById("endgame")
+            let starsList = document.querySelectorAll(".stars li");
+            let closeicon = document.querySelector(".close");
+            
+            function congratulations(){
+                if (matchedCard.length == 16){
+                    clearInterval(interval);
+                    finalTime = timer.innerHTML;
+                
+                    //show congrats popup
+                    modal.classList.add("show");
+                
+                    //declare star rating variable
+                    var starRating = document.querySelector(".stars").innerHTML;
+                    
+                    //showing move, rating, time on modal
+                    document.getElementById("finalMove").innerHTML = moves;
+                    document.getElementById("starRating").innerHTML = starRating;
+                    document.getElementById("totalTime").innerHTML = finalTime;
+                    
+                    //closeicon on modal
+                    closeModal();
+                };
+
+                function closeModal(){
+                    closeicon.addEventListener("click", function(e){
+                    modal.classList.remove("show");
+                        startGame();
+                    });
+                }
+
+                //for player to play Again 
+                function playAgain(){
+                    modal.classList.remove("show");
+                    startGame();
+                }
+            }
+        
         }
-    }
     });
 });
+
 
