@@ -56,6 +56,7 @@ function initGame() {
         return generateCard(card);
     });
 
+    movesCounter.innerHTML = 0;
     deck.innerHTML= cardHTML.join('');
 }
 
@@ -67,14 +68,16 @@ var moves = 0;
 var clicks = 0;
 
 allCards.forEach(function(card) {
-    card.addEventListener('click', function(e) {       
+    card.addEventListener('click', function(e) {    
         
         if (!card.classList.contains('open') && !card.classList.contains('show') && !card.classList.contains('match')) {
             openCards.push(card);
             card.classList.add('open', 'show');
+            clicks++;
+            movesCounter.innerHTML = Math.floor(clicks/2);
 
         
-           if (openCards.length == 2) {
+           if (openCards.length == 2) {      
              if (openCards[0].dataset.card == openCards[1].dataset.card)  {
                  openCards[0].classList.add('match');  
                  openCards[0].classList.add('open'); 
