@@ -58,6 +58,14 @@ function initGame() {
 
     movesCounter.innerHTML = 0;
     deck.innerHTML= cardHTML.join('');
+
+    //reset timer
+/*     second = 0;
+    minute = 0; 
+    hour = 0;
+    var timer = document.querySelector(".timer");
+    timer.innerHTML = "0 mins 0 secs";
+    clearInterval(interval); */
 }
 
 initGame();
@@ -66,6 +74,33 @@ var allCards = document.querySelectorAll('.card');
 var openCards = [];
 var moves = 0;
 var clicks = 0;
+
+var time = document.getElementsByTagName('time')[0],
+    start = document.getElementById('start'),
+    stop = document.getElementById('stop'),
+    clear = document.getElementById('clear'),
+    seconds = 0, minutes = 0, hours = 0,
+    t;
+
+function add() {
+    seconds++;
+    if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+            minutes = 0;
+            hours++;
+        }
+    }
+    
+    time.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+
+    timer();
+}
+function timer() {
+    t = setTimeout(add, 1000);
+}
+timer();
 
 allCards.forEach(function(card) {
     card.addEventListener('click', function(e) {    
@@ -78,7 +113,7 @@ allCards.forEach(function(card) {
 
         
            if (openCards.length == 2) {      
-             if (openCards[0].dataset.card == openCards[1].dataset.card)  {
+               if (openCards[0].dataset.card == openCards[1].dataset.card)  {
                  openCards[0].classList.add('match');  
                  openCards[0].classList.add('open'); 
                  openCards[0].classList.add('show');  
@@ -89,44 +124,54 @@ allCards.forEach(function(card) {
 
                  openCards = [];
             
-             } else {  
-                setTimeout(function() {
-                    openCards.forEach(function(card) {
-                        card.classList.remove('open', 'show');
-                    });
+                } else {  
+                    setTimeout(function() {
+                        openCards.forEach(function(card) {
+                            card.classList.remove('open', 'show');
+                        });
 
-                    openCards = [];
-                }, 1000);
-            }
+                        openCards = [];
+                    }, 1000);
+                }
         
-            StartGame()
-            cards = shuffle(cards);
+                cards = shuffle(cards);
+                
+                // remove all existing classes from each card
+                for (var i = 0; i < cards.length; i++){
+                    deck.innerHTML = "";
+                    [].forEach.call(cards, function(item) {
+                        deck.appendChild(item);
+                    });
+                    cards[i].classList.remove("show", "open", "match", "disabled");
+                }
             
-            // remove all existing classes from each card
-            for (var i = 0; i < cards.length; i++){
-                deck.innerHTML = "";
-                [].forEach.call(cards, function(item) {
-                    deck.appendChild(item);
-                });
-                cards[i].classList.remove("show", "open", "match", "disabled");
+                // reset star rating
+                //for (var i= 0; i < stars.length; i++) 
             }
-        
-            // reset star rating
-            for (var i= 0; i < stars.length; i++)
-           
-            //reset timer
-            var timer = document.querySelector(".timer");
-                timer.innerHTML = "0 mins 0 secs";
-                clearInterval(interval);
+            
+            // setting rates based on moves
+            if (moves > 8 && moves < 12){
+                for( i= 0; i < 3; i++){
+                    if(i > 1){
+                        stars[i].style.visibility = "collapse";
+                    }
+                }
             }
-        
+            else if (moves > 13){
+                for( i= 0; i < 3; i++){
+                    if(i > 0){
+                        stars[i].style.visibility = "collapse";
+                    }
+                }    
+            }   
+            
             //congrats popup
             let modal = document.getElementById("endgame")
             let starsList = document.querySelectorAll(".stars li");
             let closeicon = document.querySelector(".close");
             
             function congratulations(){
-                if (matchedCard.length == 16){
+                if (openCard.length == 16){
                     clearInterval(interval);
                     finalTime = timer.innerHTML;
                 
