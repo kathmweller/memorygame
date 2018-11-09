@@ -50,6 +50,7 @@ function shuffle(array) {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
+
 function initGame() {
     var deck = document.querySelector('.deck');
     var cardHTML = shuffle(cards).map(function(card) {
@@ -58,14 +59,6 @@ function initGame() {
 
     movesCounter.innerHTML = 0;
     deck.innerHTML= cardHTML.join('');
-
-    //reset timer
-/*     second = 0;
-    minute = 0; 
-    hour = 0;
-    var timer = document.querySelector(".timer");
-    timer.innerHTML = "0 mins 0 secs";
-    clearInterval(interval); */
 }
 
 initGame();
@@ -97,20 +90,32 @@ function add() {
 
     timer();
 }
+
 function timer() {
     t = setTimeout(add, 1000);
 }
-timer();
+
+restartGame.onclick = function() {
+    time.textContent = "00:00:00";
+    seconds = 0; minutes = 0; hours = 0;
+    
+    clearTimeout(t);
+    initGame();
+}
 
 allCards.forEach(function(card) {
     card.addEventListener('click', function(e) {    
-        
+
         if (!card.classList.contains('open') && !card.classList.contains('show') && !card.classList.contains('match')) {
             openCards.push(card);
             card.classList.add('open', 'show');
+            
+            if(clicks==0){
+                timer();
+            }
+
             clicks++;
             movesCounter.innerHTML = Math.floor(clicks/2);
-
         
            if (openCards.length == 2) {      
                if (openCards[0].dataset.card == openCards[1].dataset.card)  {
@@ -144,7 +149,7 @@ allCards.forEach(function(card) {
                     });
                     cards[i].classList.remove("show", "open", "match", "disabled");
                 }
-            
+                
                 // reset star rating
                 //for (var i= 0; i < stars.length; i++) 
             }
@@ -197,6 +202,7 @@ allCards.forEach(function(card) {
                     });
                 }
 
+                            
                 //for player to play Again 
                 function playAgain(){
                     modal.classList.remove("show");
