@@ -67,6 +67,7 @@ var allCards = document.querySelectorAll('.card');
 var openCards = [];
 var moves = 0;
 var clicks = 0;
+var stars = 0;
 
 var time = document.getElementsByTagName('time')[0],
     start = document.getElementById('start'),
@@ -95,64 +96,75 @@ function timer() {
     t = setTimeout(add, 1000);
 }
 
-restartGame.onclick = function() {
+restartGame.addEventListener('click', function(e) {
     time.textContent = "00:00:00";
     seconds = 0; minutes = 0; hours = 0;
     
     clearTimeout(t);
-    initGame();
+    movesCounter.innerHTML = 0;
+    
+    allCards.forEach(function(card) {
+        card.classList.remove('open', 'show', 'match');
+    });
+
+    clicks = 0;
+
+    openCards = [];
+});
+
+function showCard(card){
+    card.classList.add('open', 'show');
+}
+
+function addToOpenList(card){
+    openCards.push(card);
+}
+
+function lockCards(matchedCards){
+    matchedCards.forEach(function(card){
+        card.classList.add('match');  
+        card.classList.add('open'); 
+        card.classList.add('show');  
+    });
+}
+
+function flipCards(unmatchedCards){
+    setTimeout(function() {
+        unmatchedCards.forEach(function(card) {
+            card.classList.remove('open', 'show');
+        });
+    }, 1000);
+}
+
+function incrementMoveCounter(){
+    clicks++;
+    movesCounter.innerHTML = Math.floor(clicks/2);
 }
 
 allCards.forEach(function(card) {
-    card.addEventListener('click', function(e) {    
-
+    card.addEventListener('click', function(e) { 
         if (!card.classList.contains('open') && !card.classList.contains('show') && !card.classList.contains('match')) {
-            openCards.push(card);
-            card.classList.add('open', 'show');
-            
+            showCard(card);            
+            addToOpenList(card);
+
             if(clicks==0){
                 timer();
             }
-
-            clicks++;
-            movesCounter.innerHTML = Math.floor(clicks/2);
-        
-           if (openCards.length == 2) {      
-               if (openCards[0].dataset.card == openCards[1].dataset.card)  {
-                 openCards[0].classList.add('match');  
-                 openCards[0].classList.add('open'); 
-                 openCards[0].classList.add('show');  
-
-                 openCards[1].classList.add('match');
-                 openCards[1].classList.add('open');
-                 openCards[1].classList.add('show');
-
-                 openCards = [];
             
-                } else {  
-                    setTimeout(function() {
-                        openCards.forEach(function(card) {
-                            card.classList.remove('open', 'show');
-                        });
+            if (openCards.length == 2) {                      
+                if (openCards[0].dataset.card == openCards[1].dataset.card)  {
+                    lockCards(openCards);
+                }
+                else {  
+                    flipCards(openCards);                    
+                }        
 
-                        openCards = [];
-                    }, 1000);
-                }
-        
-                cards = shuffle(cards);
-                
-                // remove all existing classes from each card
-                for (var i = 0; i < cards.length; i++){
-                    deck.innerHTML = "";
-                    [].forEach.call(cards, function(item) {
-                        deck.appendChild(item);
-                    });
-                    cards[i].classList.remove("show", "open", "match", "disabled");
-                }
-                
+                openCards = [];
                 // reset star rating
                 //for (var i= 0; i < stars.length; i++) 
-            }
+            }            
+
+            incrementMoveCounter();
             
             // setting rates based on moves
             if (moves > 8 && moves < 12){
@@ -201,15 +213,7 @@ allCards.forEach(function(card) {
                         startGame();
                     });
                 }
-
-                            
-                //for player to play Again 
-                function playAgain(){
-                    modal.classList.remove("show");
-                    startGame();
-                }
-            }
-        
+            }        
         }
     });
 });
