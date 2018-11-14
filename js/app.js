@@ -103,7 +103,7 @@ restartGame.addEventListener('click', function(e) {
     movesCounter.innerHTML = 0;
     newCardSort = shuffle(cards);
     
-    allCards.forEach(function(card,index) {        
+    allCards.forEach(function(card, index) {        
         card.childNodes[0].classList.remove(card.getAttribute('data-card'));
         card.childNodes[0].classList.add(newCardSort[index]);
         card.setAttribute('data-card', newCardSort[index]);
