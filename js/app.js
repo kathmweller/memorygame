@@ -64,6 +64,7 @@ initGame();
 
 var allCards = document.querySelectorAll('.card');
 var openCards = [];
+var matchedCardList = [];
 var moves = 0;
 var clicks = 0;
 var stars = 0;
@@ -96,6 +97,10 @@ function timer() {
 }
 
 restartGame.addEventListener('click', function(e) {
+    resetToNewGame();
+});
+
+function resetToNewGame(){
     time.textContent = "00:00:00";
     seconds = 0; minutes = 0; hours = 0;
     
@@ -114,7 +119,7 @@ restartGame.addEventListener('click', function(e) {
     clicks = 0;
 
     openCards = [];
-});
+}
 
 function showCard(card){
     card.classList.add('open', 'show');
@@ -128,8 +133,23 @@ function lockCards(matchedCards){
     matchedCards.forEach(function(card){
         card.classList.add('match');  
         card.classList.add('open'); 
-        card.classList.add('show');  
+        card.classList.add('show'); 
+
+        matchedCard(card);
     });
+}
+
+function matchedCard(card){
+    matchedCardList.push(card);
+
+    if(matchedCardList.length == 16){
+        clearTimeout(t);
+
+        if (confirm("YOU MATCHED ALL THE CARDS!\nMove Count: " + movesCounter.innerHTML + "\nYour Time: " + time.textContent + "\n"+
+        "Your Star Rating: starRatingGoesHere\nWould you like to play again?")) {
+            resetToNewGame();
+        }
+    }
 }
 
 function flipCards(unmatchedCards){
@@ -155,7 +175,9 @@ allCards.forEach(function(card) {
                 timer();
             }
             
-            if (openCards.length == 2) {                      
+            incrementMoveCounter(); 
+
+            if (openCards.length == 2) {          
                 if (openCards[0].dataset.card == openCards[1].dataset.card)  {
                     lockCards(openCards);
                 }
@@ -167,8 +189,6 @@ allCards.forEach(function(card) {
                 // reset star rating
                 //for (var i= 0; i < stars.length; i++) 
             }            
-
-            incrementMoveCounter();
             
             // setting rates based on moves
             if (moves > 8 && moves < 12){
