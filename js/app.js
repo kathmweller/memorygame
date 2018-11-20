@@ -67,7 +67,7 @@ var openCards = [];
 var matchedCardList = [];
 var moves = 0;
 var clicks = 0;
-var stars = 0;
+var starsList = document.querySelectorAll(".stars li");
 
 var time = document.getElementsByTagName('time')[0],
     start = document.getElementById('start'),
@@ -116,6 +116,10 @@ function resetToNewGame(){
         index++;
     });
 
+    starsList.forEach(function(star){
+        star.style.visibility = '';
+    });
+
     clicks = 0;
 
     openCards = [];
@@ -146,10 +150,22 @@ function matchedCard(card){
         clearTimeout(t);
 
         if (confirm("YOU MATCHED ALL THE CARDS!\nMove Count: " + movesCounter.innerHTML + "\nYour Time: " + time.textContent + "\n"+
-        "Your Star Rating: starRatingGoesHere\nWould you like to play again?")) {
+        "Your Star Rating: " + getStarRating() + "\nWould you like to play again?")) {
             resetToNewGame();
-        }
+        }       
     }
+}
+
+function getStarRating(){
+    var starRating = 0;
+
+    starsList.forEach(function(star, index){
+       if(star.style.visibility !== "collapse"){
+            starRating = index + 1;
+       }
+    });
+
+    return starRating;
 }
 
 function flipCards(unmatchedCards){
@@ -182,62 +198,18 @@ allCards.forEach(function(card) {
                     lockCards(openCards);
                 }
                 else {  
-                    flipCards(openCards);                    
+                    flipCards(openCards);                     
                 }        
 
                 openCards = [];
-                // reset star rating
-                //for (var i= 0; i < stars.length; i++) 
-            }            
+           }            
             
-            // setting rates based on moves
-            if (moves > 8 && moves < 12){
-                for( i= 0; i < 3; i++){
-                    if(i > 1){
-                        stars[i].style.visibility = "collapse";
-                    }
-                }
+            if (clicks == 24){
+                starsList[0].style.visibility = "collapse";
             }
-            else if (moves > 13){
-                for( i= 0; i < 3; i++){
-                    if(i > 0){
-                        stars[i].style.visibility = "collapse";
-                    }
-                }    
-            }   
-            
-            //congrats popup
-            let modal = document.getElementById("endgame")
-            let starsList = document.querySelectorAll(".stars li");
-            let closeicon = document.querySelector(".close");
-            
-            function congratulations(){
-                if (openCard.length == 16){
-                    clearInterval(interval);
-                    finalTime = timer.innerHTML;
-                
-                    //show congrats popup
-                    modal.classList.add("show");
-                
-                    //declare star rating variable
-                    var starRating = document.querySelector(".stars").innerHTML;
-                    
-                    //showing move, rating, time on modal
-                    document.getElementById("finalMove").innerHTML = moves;
-                    document.getElementById("starRating").innerHTML = starRating;
-                    document.getElementById("totalTime").innerHTML = finalTime;
-                    
-                    //closeicon on modal
-                    closeModal();
-                };
-
-                function closeModal(){
-                    closeicon.addEventListener("click", function(e){
-                    modal.classList.remove("show");
-                        startGame();
-                    });
-                }
-            }        
+            else if (clicks == 32){
+                starsList[1].style.visibility = "collapse";
+            }
         }
     });
 });
